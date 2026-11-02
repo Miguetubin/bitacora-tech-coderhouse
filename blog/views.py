@@ -25,7 +25,7 @@ def post_detail(request, pk):
 
 @login_required
 def post_create(request):
-    form = PostForm(request.POST or None, request.FILES or None)
+    form = PostForm(request.POST if request.method == 'POST' else None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
@@ -38,7 +38,7 @@ def post_create(request):
 @login_required
 def post_update(request, pk):
     post = get_object_or_404(Post, pk=pk, author=request.user)
-    form = PostForm(request.POST or None, request.FILES or None, instance=post)
+    form = PostForm(request.POST if request.method == 'POST' else None, request.FILES or None, instance=post)
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, 'Los cambios se guardaron.')

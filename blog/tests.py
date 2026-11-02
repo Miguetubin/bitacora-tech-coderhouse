@@ -1,4 +1,4 @@
-from io import BytesIO
+from io import BytesIO, StringIO
 from tempfile import TemporaryDirectory
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -122,16 +122,12 @@ class BlogTests(TestCase):
         self.assertNotContains(response, '<script>')
 
     def test_demo_is_reproducible_without_password(self):
-        call_command('seed_demo', verbosity=0, stdout=BytesIOText())
+        call_command('seed_demo', verbosity=0, stdout=StringIO())
         count = Post.objects.count()
-        call_command('seed_demo', verbosity=0, stdout=BytesIOText())
+        call_command('seed_demo', verbosity=0, stdout=StringIO())
         self.assertEqual(Post.objects.count(), count)
         self.assertEqual(count, 4)
         author = get_user_model().objects.get(username='bitacora_demo')
         self.assertFalse(author.has_usable_password())
         self.assertEqual(Post.objects.exclude(image='').count(), 2)
 
-
-class BytesIOText:
-    def write(self, text):
-        pass

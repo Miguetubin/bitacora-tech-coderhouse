@@ -10,7 +10,7 @@ from .models import Profile
 def register(request):
     if request.user.is_authenticated:
         return redirect('accounts:profile')
-    form = RegisterForm(request.POST or None)
+    form = RegisterForm(request.POST if request.method == 'POST' else None)
     if request.method == 'POST' and form.is_valid():
         with transaction.atomic():
             user = form.save()
@@ -32,8 +32,8 @@ def profile(request):
 @login_required
 def profile_edit(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
-    user_form = UserForm(request.POST or None, instance=request.user)
-    profile_form = ProfileForm(request.POST or None, request.FILES or None, instance=profile)
+    user_form = UserForm(request.POST if request.method == 'POST' else None, instance=request.user)
+    profile_form = ProfileForm(request.POST if request.method == 'POST' else None, request.FILES or None, instance=profile)
     if request.method == 'POST':
         user_valid = user_form.is_valid()
         profile_valid = profile_form.is_valid()
