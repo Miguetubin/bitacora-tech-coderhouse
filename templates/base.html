@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bitácora Tech: ideas, experiencias y aprendizajes sobre Python, desarrollo web y tecnología.">
+  <title>{% block title %}Bitácora Tech{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<header class="site-header">
+  <nav class="container nav" aria-label="Navegación principal">
+    <a class="brand" href="{% url 'blog:post_list' %}"><span class="brand-icon" aria-hidden="true">b.</span> bitácora<span class="brand-light">tech</span></a>
+    <div class="nav-links">
+      <a href="{% url 'blog:post_list' %}">Explorar</a>
+      <a href="{% url 'blog:about' %}">Acerca de</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}">Mi perfil</a>
+        <a class="button small" href="{% url 'blog:post_create' %}">+ Escribir</a>
+        <form class="inline" method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="link-button" type="submit">Salir</button></form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Ingresar</a>
+        <a class="button small" href="{% url 'accounts:register' %}">Crear cuenta ↗</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>
+<main id="contenido" class="container main">
+  {% if messages %}<div aria-live="polite">{% for message in messages %}<div class="notice {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="container footer"><a class="brand" href="{% url 'blog:post_list' %}">bitácora<span class="brand-light">tech</span></a><span>Un espacio para aprender y compartir.</span><span>Miguel Tubin · Proyecto Python / Coderhouse</span></footer>
+</body>
+</html>

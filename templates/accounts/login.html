@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Ingresar · Bitácora Tech{% endblock %}
+{% block content %}<section class="form-panel"><p class="eyebrow">QUÉ BUENO VERTE DE NUEVO</p><h1>Seguí creando.</h1><p class="muted">Ingresá a tu cuenta para escribir y compartir.</p><form method="post">{% csrf_token %}{% include 'includes/form_fields.html' %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}<button type="submit" class="button full">Ingresar</button></form><p class="form-bottom">¿Todavía no tenés cuenta? <a class="text-link" href="{% url 'accounts:register' %}">Registrate</a></p></section>{% endblock %}

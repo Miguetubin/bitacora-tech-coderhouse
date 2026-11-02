@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Editar perfil · Bitácora Tech{% endblock %}
+{% block content %}<section class="form-panel"><p class="eyebrow">HACÉ TUYO ESTE ESPACIO</p><h1>Tu perfil.</h1><form method="post" enctype="multipart/form-data">{% csrf_token %}{% include 'includes/form_fields.html' with form=user_form %}{% include 'includes/form_fields.html' with form=profile_form %}<div class="actions"><button class="button" type="submit">Guardar perfil</button><a class="text-link" href="{% url 'accounts:profile' %}">Cancelar</a></div></form></section>{% endblock %}
