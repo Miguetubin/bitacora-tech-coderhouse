@@ -31,11 +31,11 @@ Blog de tecnología desarrollado por **Miguel Tubin** como proyecto final de **P
 Cloná la URL HTTPS de **este repositorio**, disponible en el botón **Code** de GitHub:
 
 ```bash
-git clone URL_HTTPS_DE_ESTE_REPOSITORIO bitacora-tech
+git clone https://github.com/Miguetubin/bitacora-tech-coderhouse.git bitacora-tech
 cd bitacora-tech
 ```
 
-Reemplazá `URL_HTTPS_DE_ESTE_REPOSITORIO` por la URL real. Los comandos siguientes se ejecutan en la carpeta que contiene `manage.py`.
+Los comandos siguientes se ejecutan en la carpeta que contiene `manage.py`.
 
 ### 2. Crear y activar un entorno virtual
 
