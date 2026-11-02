@@ -5,7 +5,7 @@
 <a class="back-link" href="{% url 'blog:post_list' %}">← Todas las publicaciones</a>
 <div class="post-meta"><span class="tag">{{ post.get_category_display }}</span><time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:'d M Y' }}</time></div>
 <h1>{{ post.title }}</h1><p class="muted">Por {{ post.author.get_full_name|default:post.author.username }} · Actualizado {{ post.updated_at|date:'d/m/Y' }}</p>
-{% if post.image %}<img class="article-image" src="{{ post.image.url }}" alt="Imagen de {{ post.title }}">{% endif %}
+{% if post.has_image %}<img class="article-image" src="{{ post.image.url }}" alt="Imagen de {{ post.title }}">{% endif %}
 <div class="article-body">{{ post.content|linebreaks }}</div>
 {% if user == post.author %}<div class="actions"><a class="button" href="{% url 'blog:post_update' post.pk %}">Editar publicación</a><a class="button danger-outline" href="{% url 'blog:post_delete' post.pk %}">Eliminar</a></div>{% endif %}
 </article>

@@ -131,3 +131,110 @@ class BlogTests(TestCase):
         self.assertFalse(author.has_usable_password())
         self.assertEqual(Post.objects.exclude(image='').count(), 2)
 
+
+    def test_missing_stored_image_has_fallback_and_can_be_edited(self):
+        self.post.image.save('perdida.png', image_file(), save=True)
+        missing_url = self.post.image.url
+        self.post.image.storage.delete(self.post.image.name)
+        self.assertNotContains(self.client.get('/'), missing_url)
+        self.assertNotContains(self.client.get(self.post.get_absolute_url()), missing_url)
+        self.client.force_login(self.owner)
+        response = self.client.post(reverse('blog:post_update', args=[self.post.pk]), {
+            'title': 'Editado sin archivo original', 'content': 'Texto conservado', 'category': 'python',
+        })
+        self.assertRedirects(response, self.post.get_absolute_url())
+
+    def test_demo_recovers_missing_media_without_duplicate_posts(self):
+        call_command('seed_demo', stdout=StringIO())
+        count = Post.objects.count()
+        images = list(Post.objects.exclude(image=''))
+        for post in images:
+            post.image.storage.delete(post.image.name)
+        call_command('seed_demo', stdout=StringIO())
+        self.assertEqual(Post.objects.count(), count)
+        for post in images:
+            post.refresh_from_db()
+            self.assertTrue(post.image.storage.exists(post.image.name))
+
+    def test_edit_retains_image_then_accepts_replacement(self):
+        self.post.image.save('original.png', image_file(), save=True)
+        original_name = self.post.image.name
+        self.client.force_login(self.owner)
+        url = reverse('blog:post_update', args=[self.post.pk])
+        data = {'title': 'Título actualizado', 'content': 'Contenido', 'category': 'web'}
+        self.assertRedirects(self.client.post(url, data), self.post.get_absolute_url())
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.image.name, original_name)
+        data['image'] = image_file('reemplazo.png')
+        self.assertRedirects(self.client.post(url, data), self.post.get_absolute_url())
+        self.post.refresh_from_db()
+        self.assertNotEqual(self.post.image.name, original_name)
+        self.assertContains(self.client.get(self.post.get_absolute_url()), self.post.image.url)
+
+    def test_supported_images_and_size_limit(self):
+        self.client.force_login(self.owner)
+        url = reverse('blog:post_create')
+        for format_name, extension in [('PNG', 'png'), ('JPEG', 'jpg'), ('WEBP', 'webp')]:
+            with self.subTest(format=format_name):
+                output = BytesIO()
+                Image.new('RGB', (20, 20), 'green').save(output, format=format_name)
+                response = self.client.post(url, {
+                    'title': f'Formato {format_name}', 'content': 'Imagen válida', 'category': 'python',
+                    'image': SimpleUploadedFile(f'imagen.{extension}', output.getvalue(), content_type=f'image/{extension}'),
+                })
+                self.assertEqual(response.status_code, 302)
+        count = Post.objects.count()
+        large_image = image_file()
+        contents = large_image.read().ljust(5 * 1024 * 1024 + 1, b'\0')
+        response = self.client.post(url, {
+            'title': 'Imagen demasiado grande', 'content': 'Debe rechazarse', 'category': 'python',
+            'image': SimpleUploadedFile('grande.png', contents, content_type='image/png'),
+        })
+        self.assertContains(response, 'La imagen no puede superar los 5 MB.')
+        self.assertEqual(Post.objects.count(), count)
+
+    def test_invalid_update_preserves_saved_post(self):
+        self.client.force_login(self.owner)
+        url = reverse('blog:post_update', args=[self.post.pk])
+        for data in [
+            {},
+            {'title': 'A' * 161, 'content': 'Texto', 'category': 'python'},
+            {'title': 'Título', 'content': ' ', 'category': 'python'},
+            {'title': 'Título', 'content': 'Texto', 'category': 'inexistente'},
+        ]:
+            with self.subTest(data=data):
+                response = self.client.post(url, data)
+                self.assertTrue(response.context['form'].errors)
+                self.post.refresh_from_db()
+                self.assertEqual(self.post.title, 'Aprender Python')
+                self.assertEqual(self.post.content, 'Django y modelos')
+
+    def test_invalid_page_numbers_and_escaped_search(self):
+        for page in ['no-es-numero', '-1', '0', '999999999999999999999']:
+            self.assertEqual(self.client.get('/', {'page': page}).status_code, 200)
+        response = self.client.get('/', {'q': '<script>alert(1)</script>'})
+        self.assertContains(response, '&lt;script&gt;')
+        self.assertNotContains(response, '<script>')
+
+    def test_empty_database_and_custom_404(self):
+        Post.objects.all().delete()
+        self.assertContains(self.client.get('/'), 'Todavía no hay publicaciones.')
+        with override_settings(DEBUG=False):
+            response = self.client.get('/publicaciones/99999/')
+            self.assertEqual(response.status_code, 404)
+            self.assertContains(response, 'Esta página no está.', status_code=404)
+
+    def test_disallowed_image_extension_does_not_replace_existing_image(self):
+        self.post.image.save('original.png', image_file(), save=True)
+        original_name = self.post.image.name
+        output = BytesIO()
+        Image.new('RGB', (20, 20), 'green').save(output, format='GIF')
+        self.client.force_login(self.owner)
+        response = self.client.post(reverse('blog:post_update', args=[self.post.pk]), {
+            'title': 'No guardar', 'content': 'Texto', 'category': 'python',
+            'image': SimpleUploadedFile('no-permitida.gif', output.getvalue(), content_type='image/gif'),
+        })
+        self.assertTrue(response.context['form'].errors.get('image'))
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.title, 'Aprender Python')
+        self.assertEqual(self.post.image.name, original_name)

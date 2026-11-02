@@ -13,7 +13,7 @@ Repositorio: https://github.com/Miguetubin/bitacora-tech-coderhouse
 - Clave local independiente configurada, migraciones aplicadas desde cero y contenido de ejemplo reconstruido.
 - `python manage.py check`: sin problemas.
 - `python manage.py makemigrations --check --dry-run`: sin cambios pendientes.
-- `python manage.py test`: 16 pruebas aprobadas tanto localmente como desde el clon de GitHub.
+- `python manage.py test`: 31 pruebas aprobadas tanto localmente como desde el clon de GitHub.
 - Inicio real del servidor con `runserver` comprobado.
 
 ## Funcionalidad y permisos
@@ -37,12 +37,18 @@ Repositorio: https://github.com/Miguetubin/bitacora-tech-coderhouse
 
 - Repositorio público, con historial de etapas reales de desarrollo, interfaz, pruebas y documentación.
 - Código completo, templates, estáticos y migraciones incluidos.
-- Los 47 archivos versionados contrastados byte por byte con el clon descargado desde GitHub antes de esta actualización documental.
+- Archivos versionados contrastados con el clon descargado desde GitHub al cerrar cada entrega.
 - `requirements.txt`, `.gitignore`, `.env.example` y README incluidos.
 - README con URL real de clonación, entorno virtual, dependencias, variables, migraciones, servidor, datos demo y superusuario opcional.
 - Sin `.env`, claves locales, base de datos, media de prueba, entornos virtuales ni cachés en los archivos versionados.
 - Sin rutas absolutas del entorno de trabajo en el código del proyecto.
 - La base y las imágenes de ejemplo se reconstruyen con `migrate` y `seed_demo`.
+
+## Revisión ampliada
+
+- Informe detallado y matriz de aceptación en [AUDITORIA.md](AUDITORIA.md).
+- Correcciones de imágenes ausentes, recuperación de media demo y textos largos.
+- Ocho pantallas comprobadas a 320, 390, 768 y 1440 píxeles.
 
 ## Alcance
 

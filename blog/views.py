@@ -14,7 +14,7 @@ def post_list(request):
         posts = posts.filter(Q(title__icontains=query) | Q(content__icontains=query))
     page = Paginator(posts, 6).get_page(request.GET.get('page'))
     return render(request, 'blog/post_list.html', {
-        'page_obj': page, 'query': query, 'total_posts': Post.objects.count(),
+        'page_obj': page, 'query': query,
     })
 
 

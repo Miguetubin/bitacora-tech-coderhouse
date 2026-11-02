@@ -12,6 +12,7 @@
   box-sizing:border-box
 }
 body {
+  overflow-wrap:anywhere;
   margin:0;
   background:var(--paper);
   color:var(--ink);
@@ -363,6 +364,12 @@ h3 {
   font-size:24px;
   line-height:1
 }
+.card-footer>span,
+.profile-header>div,
+.profile-posts article>div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .avatar-mini {
   display:inline-grid;
   place-items:center;
@@ -417,7 +424,8 @@ h3 {
   font-size:38px
 }
 .field {
-  margin:24px 0
+  margin:24px 0;
+  overflow-wrap:anywhere
 }
 .field label {
   display:block;
@@ -642,7 +650,7 @@ input[type=checkbox] {
     gap:30px
   }
   .hero h1 {
-    font-size:54px
+    font-size:clamp(42px,13vw,54px)
   }
   .hero-art {
     height:240px
@@ -657,7 +665,8 @@ input[type=checkbox] {
     grid-template-columns:1fr
   }
   .section-heading {
-    align-items:flex-start
+    align-items:flex-start;
+    flex-wrap:wrap
   }
   .section-heading h2 {
     font-size:25px

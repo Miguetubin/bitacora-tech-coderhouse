@@ -16,7 +16,7 @@ Blog de tecnología desarrollado por **Miguel Tubin** como proyecto final de **P
 - Listado paginado y detalle público de publicaciones.
 - Crear, editar y eliminar artículos desde la interfaz web.
 - Categorías: Python, desarrollo web y tecnología.
-- Imagen opcional de portada con alternativa visual cuando no se carga una.
+- Imagen opcional de portada con alternativa visual cuando no se carga una o falta su archivo.
 - Búsqueda por título o contenido, con aviso si no hay coincidencias.
 - Registro, login y logout mediante POST.
 - Perfil privado, edición de nombre, apellido, correo, biografía y avatar opcional.
@@ -106,7 +106,7 @@ Las migraciones están incluidas: no es necesario ejecutar `makemigrations` para
 python manage.py seed_demo
 ```
 
-Crea tres artículos, dos con imágenes generadas localmente y uno sin imagen. Se puede repetir sin duplicar artículos. El autor de ejemplo tiene una contraseña inutilizable: **no hay credenciales demo**. Registrá tu propia cuenta para probar la escritura.
+Crea tres artículos, dos con imágenes generadas localmente y uno sin imagen. Se puede repetir sin duplicar artículos y recupera las imágenes de ejemplo si se borró la carpeta `media/`. El autor de ejemplo tiene una contraseña inutilizable: **no hay credenciales demo**. Registrá tu propia cuenta para probar la escritura.
 
 El repositorio excluye `db.sqlite3` y `media/`. `migrate` reconstruye la base y `seed_demo` reconstruye los ejemplos y sus imágenes sin descargar recursos externos. Sin datos demo, la portada muestra un estado vacío y permite crear la primera publicación.
 
@@ -173,6 +173,10 @@ requirements.txt
 .gitignore
 README.md
 ```
+
+## Revisión de entrega
+
+La matriz de requisitos, los casos adicionales y las correcciones de la auditoría están documentados en [docs/AUDITORIA.md](docs/AUDITORIA.md). Los comandos para repetir las pruebas están en la sección de verificación automática.
 
 ## Autor
 

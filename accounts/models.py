@@ -11,3 +11,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'Perfil de {self.user.username}'
+
+    @property
+    def has_avatar(self):
+        return bool(self.avatar and self.avatar.storage.exists(self.avatar.name))

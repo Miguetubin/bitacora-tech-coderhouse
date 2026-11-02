@@ -12,7 +12,7 @@
   {% for post in page_obj %}
     <article class="post-card">
       <a class="card-cover category-{{ post.category }}" href="{{ post.get_absolute_url }}" aria-label="Leer {{ post.title }}">
-        {% if post.image %}<img src="{{ post.image.url }}" alt="Imagen de {{ post.title }}" loading="lazy">{% else %}<div class="cover-placeholder"><span>{{ post.get_category_display }}</span><strong aria-hidden="true">{% if post.category == 'python' %}py.{% elif post.category == 'web' %}&lt;/&gt;{% else %}↗{% endif %}</strong><span>BITÁCORA TECH</span></div>{% endif %}
+        {% if post.has_image %}<img src="{{ post.image.url }}" alt="Imagen de {{ post.title }}" loading="lazy">{% else %}<div class="cover-placeholder"><span>{{ post.get_category_display }}</span><strong aria-hidden="true">{% if post.category == 'python' %}py.{% elif post.category == 'web' %}&lt;/&gt;{% else %}↗{% endif %}</strong><span>BITÁCORA TECH</span></div>{% endif %}
       </a>
       <div class="card-content"><div class="post-meta"><span class="tag">{{ post.get_category_display }}</span><time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:'d M Y' }}</time></div><h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3><p>{{ post.content|truncatewords:24 }}</p><div class="card-footer"><span><span class="avatar-mini">{{ post.author.username|first|upper }}</span> {{ post.author.get_full_name|default:post.author.username }}</span><a href="{{ post.get_absolute_url }}" aria-label="Leer {{ post.title }}">↗</a></div></div>
     </article>

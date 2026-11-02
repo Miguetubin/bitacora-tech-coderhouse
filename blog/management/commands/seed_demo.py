@@ -27,8 +27,8 @@ class Command(BaseCommand):
             author.save(update_fields=['password'])
         colors = [(210, 233, 166), (198, 216, 236)]
         for index, (title, category, content) in enumerate(ARTICLES):
-            post, created = Post.objects.get_or_create(author=author, title=title, defaults={'category': category, 'content': content})
-            if created and index < 2:
+            post, _ = Post.objects.get_or_create(author=author, title=title, defaults={'category': category, 'content': content})
+            if index < 2 and not post.has_image:
                 image = Image.new('RGB', (1200, 700), colors[index])
                 draw = ImageDraw.Draw(image)
                 for x in range(0, 1200, 50):

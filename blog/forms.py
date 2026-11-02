@@ -1,9 +1,11 @@
 from django import forms
+from django.core.files.uploadedfile import UploadedFile
 from .models import Post
 
 
 def validate_image(image):
-    if image and image.size > 5 * 1024 * 1024:
+    # Validar la subida nueva sin abrir un archivo previo que podría no existir.
+    if isinstance(image, UploadedFile) and image.size > 5 * 1024 * 1024:
         raise forms.ValidationError('La imagen no puede superar los 5 MB.')
     return image
 
